@@ -28,7 +28,7 @@ And finally run it
 ros2 run package_name new_node
 ```
 
-## Node example
+## How to use
 
 In this example, we can check all the code required to program a lawn-mower using this framework.
 
@@ -39,7 +39,7 @@ from interfaces.msg import State as StateMessage
 from utils import blades_handler
 from point_cloud import PointCloud
 
-TIMER_PERIOD = 1
+MAXIMUM_BUFFER = 2
 ROBOT_WIDTH = 0.5
 
 class BladeControllerNode(Node):
@@ -54,7 +54,7 @@ class BladeControllerNode(Node):
             StateMessage,
             'state',
             self.state_listener_callback,
-            TIMER_PERIOD)
+            MAXIMUM_BUFFER)
 
     def state_listener_callback(self, state):
 
