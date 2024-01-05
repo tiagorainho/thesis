@@ -1,0 +1,19 @@
+
+# webots
+webots_ros2_epuck
+install
+log
+
+# world thumbnail files
+*.jpg
+
+# world - comment this to save world of webots
+*.wbproj
+*.wbt
+
+# build files
+build
+*.cache
+
+# Unignore Makefiles
+!**/Makefile

@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  node_driver:
+    build:
+      context: ..
+      dockerfile: ./deploy/docker/Dockerfile.ros-node
+    # command: make run
+    volumes:
+      - ../src/Node/robot_driver:/robot_driver

@@ -1,0 +1,50 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# To ignore
+webots_ros2-master
+AMSA_EOL
+
+# Ignore IDE
+## vscode
+**/*.vscode
+**/**idea
+
+# OS
+**/*.DS_Store
+
+# auxiliar files
+**/*.log
+
+# Packages
+**/*.7z
+**/*.bz2
+**/*.dmg
+**/*.gz
+**/*.iso
+**/*.jar
+**/*.rar
+**/*.tar
+**/*.xz
+**/*.zip
+
+# Compiled source
+**/*.exe
+**/**/*.o
+**/*.d
+**/*.class
+**/*.so
+**/*.dylib
+**/*.dll
+**/*.lib
+**/*.a
+**/*.cof
+**/*.hex
+**/*.pyc
+**/*.gch

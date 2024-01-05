@@ -1,0 +1,11 @@
+name: node-env
+channels:
+- anaconda 
+- defaults
+- conda-forge
+dependencies:
+- python
+- numpy
+- pip
+- pip:
+  - open3d

@@ -1,0 +1,26 @@
+FROM --platform=linux/amd64 ros:humble
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip
+
+# source ros2 underlay
+RUN echo source /opt/ros/humble/setup.bash >> /root/.bashrc
+
+WORKDIR /Node
+
+COPY ./Node/ros/sasori/package.xml package.xml
+
+# install numpy and open3d
+RUN rosdep update
+RUN rosdep install --from-paths . -y --ignore-src
+RUN pip3 install open3d-cpu
+
+RUN rm package.xml
+
+VOLUME /Node
+
+RUN apt-get -y update
+RUN apt-get -y install ~nros-humble-rqt*
+
+
+ENTRYPOINT ["/bin/bash", "-c", "sleep infinity"]

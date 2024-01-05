@@ -1,0 +1,8 @@
+int32 robot_id
+float32 robot_width
+int32 number_of_angles
+float32 remaining_threshold
+---
+geometry_msgs/Point[] result
+---
+string feedback

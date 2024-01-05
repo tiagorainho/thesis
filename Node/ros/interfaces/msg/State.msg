@@ -1,0 +1,4 @@
+int32 robot_id
+sensor_msgs/PointCloud2 traversable
+sensor_msgs/PointCloud2 inaccessible
+geometry_msgs/Point[] previous_positions

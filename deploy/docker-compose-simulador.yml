@@ -1,0 +1,12 @@
+
+webots:
+    #command: xvfb-run --auto-servernum webots --mode=realtime --no-rendering --stdout --stderr --minimize --batch simulator/worlds/environment.wbt
+    build:
+      context: ..
+      dockerfile: ./deploy/docker/Dockerfile.simulator
+    environment:
+      - DISPLAY: :0.0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    ports:
+      - 1234

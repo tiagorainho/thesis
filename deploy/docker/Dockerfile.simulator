@@ -1,0 +1,19 @@
+FROM --platform=linux/amd64 cyberbotics/webots
+
+RUN apt install xvfb
+
+RUN apt-get -y update && apt-get -y install build-essential libgl1-mesa-dev libassimp-dev libfontconfig1 libdbus-1-3 wget
+RUN wget http://download.qt.io/official_releases/qt/5.9/5.9.1/qt-opensource-linux-x64-5.9.1.run
+RUN chmod +x qt-opensource-linux-x64-5.9.1.run
+RUN ./qt-opensource-linux-x64-5.9.1.run
+
+COPY simulator /simulator
+
+COPY deploy/entrypoints/entrypoint_simulator.sh scripts/entrypoint_simulator.sh
+COPY scripts/docker_utils.sh scripts/docker_utils.sh
+
+RUN export WEBOTS_HOME=/usr/local/webots
+RUN export LD_LIBRARY_PATH=${WEBOTS_HOME}/lib/controller
+
+
+ENTRYPOINT [ "bash", "./scripts/run_simulator.sh" ]

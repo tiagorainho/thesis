@@ -1,0 +1,82 @@
+
+FROM --platform=linux/amd64 ubuntu:22.04
+
+# define non interactive environment
+ENV DEBIAN_FRONTEND=noninteractive
+
+# install locales
+RUN apt-get update && apt-get install -y locales
+RUN locale-gen en_US en_US.UTF-8
+RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+RUN export LANG=en_US.UTF-8
+
+# install required 
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository universe
+
+# get archives from ros2
+RUN apt-get update && apt-get install -y curl gnupg2 lsb-release
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# install ros2
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get install -y ros-humble-ros-base
+RUN apt-get install -y ros-dev-tools
+
+# install new packages
+RUN apt-get install -y bash
+
+# source ros2 underlay
+RUN echo . /opt/ros/humble/setup.bash >> /root/.bashrc
+
+# -------------------------------------
+
+# add webots
+
+# RUN curl -L -o /tmp/webots.deb \
+#         'https://github.com/cyberbotics/webots/releases/download/R2022b/webots_2022b_amd64.deb' && \
+#     apt-get install -y /tmp/webots.deb && \
+#     rm -f /tmp/webots.deb
+
+# # export default necessary variables
+# ENV WEBOTS_HOME /usr/local/webots
+# ENV LD_LIBRARY_PATH ${WEBOTS_HOME}/lib/controller
+
+# # install webots
+# RUN wget -qO- https://cyberbotics.com/Cyberbotics.asc | sudo apt-key add -
+# RUN apt-add-repository 'deb https://cyberbotics.com/debian/ binary-amd64/'
+# RUN apt-get update
+# RUN apt-get install -y webots
+
+# add ros-webots driver
+RUN apt-get update -y
+RUN apt-get install -y ros-humble-webots-ros2-driver
+
+# install external packages to get container name by dnslookup
+RUN apt-get update -y && apt install net-tools
+RUN apt-get install -y dnsutils
+
+# add simulator controllers
+COPY ./simulator/controllers /simulator/controllers
+
+WORKDIR /simulator/controllers/webots_ros_controllers
+
+# add scripts
+COPY ./scripts/docker_utils.sh /scripts/docker_utils.sh
+COPY ./scripts/simulation_setup.sh /scripts/simulation_setup.sh
+COPY ./scripts/run_simulation.sh /scripts/run_simulation.sh
+COPY ./deploy/entrypoints/entrypoint_simulation.sh /scripts/entrypoint.sh
+
+# volume
+VOLUME /webots_ros_controllers
+
+RUN make build
+
+RUN chmod +x /scripts/entrypoint.sh
+    
+ENTRYPOINT ["/scripts/entrypoint.sh"]
+
+CMD ["sleep infinity"]

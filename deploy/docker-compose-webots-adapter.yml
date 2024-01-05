@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  webots_controller_node:
+    build:
+      context: ..
+      dockerfile: ./deploy/docker/Dockerfile.webots-ros2
+    command: make
+    environment:
+      WEBOTS_SIMULATION_IP: host.docker.internal
+      WEBOTS_SIMULATION_PORT: 1234
+      ROBOT_NAME: e-puck
+    deploy:
+      replicas: 1
+    volumes:
+      - ../simulator/controllers/webots_ros_controllers:/webots_ros_controllers
+
+volumes:
+  webots_controller_node:
