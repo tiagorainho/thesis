@@ -58,18 +58,22 @@ class BladeControllerNode(Node):
 
     def state_listener_callback(self, state):
 
-        # get current state
-        newly_updated_map = PointCloud.desserialize(state.data.goal_pc)
+        # get current goal area
+        goal_pc = PointCloud.desserialize(state.data.goal_pc)
 
-        # get neighbors
-        covered_points = self.already_covered_points.closest_neighbor(point=state.data.robot_position, max_radius=ROBOT_WIDTH)
-        
-        # check if it has already trimmed that position
-        if len(covered_points) == 0:
-            blades_handler.run()
-            self.already_covered_points.extend(robot_position_with_fixed_reference)
-        else:
+        # is outside the goal area
+        if len(goal_pc.closest_neighbor(point=state.data.robot_position, max_radius=ROBOT_WIDTH)) == 0:
             blades_handler.shutdown()
+            return
+
+        # check if it has already trimmed that position
+        if len(self.already_covered_points.closest_neighbor(point=state.data.robot_position, max_radius=ROBOT_WIDTH)) > 0:
+            blades_handler.shutdown()
+            return
+        
+        # else
+        blades_handler.run()
+        self.already_covered_points.extend(robot_position_with_fixed_reference)
 
 
 def main(args=None):
